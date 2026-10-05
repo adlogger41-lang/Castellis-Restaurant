@@ -1,0 +1,7647 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="theme-color"
+    content="#17120f">
+
+<title>
+    Castelli's Restaurant | Italian Dining in Addis Ababa
+</title>
+
+<meta
+    name="description"
+    content="Castelli's Restaurant in Piazza, Addis Ababa. Authentic Italian pasta, steaks, premium wines and formal dining."
+>
+
+<style>
+
+/* =========================================================
+   CASTELLI'S RESTAURANT
+   PREMIUM ITALIAN DINING
+   SINGLE FILE WEBSITE
+   LOCAL IMAGES ONLY
+
+   Folder structure:
+
+   Castelli's-Restaurant/
+   ├── index.html
+   └── images/
+       ├── logo.png
+       ├── hero.jpg
+       ├── img-1.jpg
+       ├── img-2.jpg
+       ├── img-3.jpg
+       └── img-4.jpg
+
+   DESIGN SYSTEM
+   ---------------------------------------------------------
+   Primary    : Espresso / near black
+   Secondary  : Warm ivory
+   Accent     : Antique gold
+   Signature  : Deep burgundy
+
+   PERFORMANCE PRINCIPLES
+   ---------------------------------------------------------
+   - Mostly transform + opacity animations
+   - No canvas
+   - No large JS animation libraries
+   - No continuous expensive DOM effects
+   - Reduced-motion support
+   - Lazy loading for non-hero images
+   - IntersectionObserver for reveal animations
+   - Lightweight mobile navigation
+   ========================================================= */
+
+
+/* =========================================================
+   GOOGLE FONTS
+   ========================================================= */
+
+@import url(
+    'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap'
+);
+
+
+/* =========================================================
+   ROOT VARIABLES
+   ========================================================= */
+
+:root{
+
+    /* Background system */
+
+    --bg:#15110f;
+    --bg-deep:#0e0b09;
+    --bg-soft:#1d1714;
+    --bg-card:#211a17;
+
+    /* Italian luxury palette */
+
+    --ivory:#f5efe4;
+    --ivory-soft:#e8dfd1;
+    --ivory-muted:#b7aa9a;
+
+    --gold:#b89252;
+    --gold-light:#d6b87a;
+    --gold-soft:#ead7ae;
+
+    --burgundy:#641f2b;
+    --burgundy-light:#843342;
+
+    --espresso:#1a1310;
+
+    /* Utility colors */
+
+    --white:#fffdf9;
+    --muted:#9f958a;
+    --muted-dark:#716860;
+
+    --line:rgba(245,239,228,.12);
+    --line-soft:rgba(245,239,228,.075);
+
+    --glass:rgba(255,255,255,.045);
+    --glass-strong:rgba(255,255,255,.075);
+
+    --shadow:
+        0 30px 90px rgba(0,0,0,.38);
+
+    --shadow-soft:
+        0 20px 55px rgba(0,0,0,.25);
+
+    --ease:
+        cubic-bezier(.16,1,.3,1);
+
+    --ease-soft:
+        cubic-bezier(.22,1,.36,1);
+
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    background:
+        radial-gradient(
+            circle at 80% 10%,
+            rgba(100,31,43,.10),
+            transparent 28%
+        ),
+        var(--bg);
+
+    color:var(--ivory);
+
+    font-family:
+        "DM Sans",
+        sans-serif;
+
+    overflow-x:hidden;
+
+    line-height:1.5;
+}
+
+body.locked{
+    overflow:hidden;
+}
+
+a{
+    color:inherit;
+    text-decoration:none;
+}
+
+button,
+input,
+textarea{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
+}
+
+img{
+    display:block;
+    max-width:100%;
+}
+
+::selection{
+    background:var(--gold);
+    color:#111;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar{
+    width:7px;
+}
+
+::-webkit-scrollbar-track{
+    background:var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:
+        linear-gradient(
+            var(--gold),
+            var(--burgundy)
+        );
+
+    border-radius:20px;
+}
+
+
+/* =========================================================
+   SCROLL PROGRESS
+   ========================================================= */
+
+.progress{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:0;
+    height:3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--gold),
+            var(--gold-light),
+            var(--burgundy-light)
+        );
+
+    z-index:99999;
+}
+
+
+/* =========================================================
+   PRELOADER
+   ========================================================= */
+
+.loader{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:99998;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    background:
+
+        radial-gradient(
+            circle at center,
+            rgba(184,146,82,.09),
+            transparent 34%
+        ),
+
+        var(--bg-deep);
+
+    transition:
+        opacity .7s var(--ease),
+        visibility .7s;
+
+}
+
+.loader.hide{
+
+    opacity:0;
+    visibility:hidden;
+
+}
+
+.loader-inner{
+
+    width:min(
+        340px,
+        82%
+    );
+
+    text-align:center;
+
+}
+
+.loader-logo{
+
+    width:82px;
+    height:82px;
+
+    object-fit:cover;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    border:
+        1px solid
+        rgba(214,184,122,.6);
+
+    animation:
+        loaderPulse 2s
+        ease-in-out
+        infinite;
+
+}
+
+.loader-name{
+
+    margin-top:22px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:26px;
+
+    letter-spacing:.04em;
+
+}
+
+.loader-sub{
+
+    margin-top:6px;
+
+    color:var(--gold-light);
+
+    font-size:9px;
+
+    letter-spacing:.28em;
+
+    text-transform:uppercase;
+
+}
+
+.loader-line{
+
+    width:170px;
+    height:1px;
+
+    background:
+        rgba(255,255,255,.12);
+
+    margin:
+        20px
+        auto
+        0;
+
+    overflow:hidden;
+
+}
+
+.loader-line span{
+
+    display:block;
+
+    width:35%;
+    height:100%;
+
+    background:var(--gold);
+
+    animation:
+        loaderLine
+        1.25s
+        ease-in-out
+        infinite;
+
+}
+
+@keyframes loaderPulse{
+
+    0%,
+    100%{
+        transform:scale(.96);
+    }
+
+    50%{
+        transform:scale(1.03);
+    }
+
+}
+
+@keyframes loaderLine{
+
+    0%{
+        transform:translateX(-130%);
+    }
+
+    100%{
+        transform:translateX(430%);
+    }
+
+}
+
+
+/* =========================================================
+   CUSTOM CURSOR
+   Desktop only
+   ========================================================= */
+
+.cursor-dot,
+.cursor-ring{
+
+    position:fixed;
+
+    pointer-events:none;
+
+    z-index:99997;
+
+    border-radius:50%;
+
+    transform:
+        translate(-50%,-50%);
+
+}
+
+.cursor-dot{
+
+    width:6px;
+    height:6px;
+
+    background:
+        var(--gold-light);
+
+}
+
+.cursor-ring{
+
+    width:34px;
+    height:34px;
+
+    border:
+        1px solid
+        rgba(214,184,122,.55);
+
+    transition:
+        width .25s,
+        height .25s,
+        background .25s,
+        border-color .25s;
+
+}
+
+.cursor-ring.active{
+
+    width:56px;
+    height:56px;
+
+    background:
+        rgba(184,146,82,.08);
+
+    border-color:
+        var(--gold-light);
+
+}
+
+
+/* =========================================================
+   AMBIENT BACKGROUND
+   ========================================================= */
+
+.ambient{
+
+    position:fixed;
+
+    inset:0;
+
+    pointer-events:none;
+
+    overflow:hidden;
+
+    z-index:-1;
+
+}
+
+.ambient-glow{
+
+    position:absolute;
+
+    width:420px;
+    height:420px;
+
+    border-radius:50%;
+
+    filter:blur(100px);
+
+    opacity:.12;
+
+}
+
+.ambient-glow.one{
+
+    background:
+        var(--burgundy);
+
+    top:-180px;
+    right:-130px;
+
+}
+
+.ambient-glow.two{
+
+    background:
+        var(--gold);
+
+    bottom:-230px;
+    left:-160px;
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.nav{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+    right:0;
+
+    z-index:5000;
+
+    padding:
+        20px
+        5%;
+
+    transition:
+        padding .45s var(--ease);
+
+}
+
+.nav.scrolled{
+
+    padding:
+        10px
+        5%;
+
+}
+
+.nav-inner{
+
+    width:
+        min(
+            1380px,
+            100%
+        );
+
+    height:72px;
+
+    margin:auto;
+
+    padding:
+        0 17px
+        0 13px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    background:
+        rgba(17,13,11,.62);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    border:
+        1px solid
+        rgba(245,239,228,.10);
+
+    border-radius:20px;
+
+    box-shadow:
+        0 15px 55px
+        rgba(0,0,0,.20);
+
+    transition:
+        background .4s,
+        border-color .4s,
+        box-shadow .4s;
+
+}
+
+.nav.scrolled .nav-inner{
+
+    background:
+        rgba(14,11,9,.88);
+
+    border-color:
+        rgba(184,146,82,.20);
+
+    box-shadow:
+        0 18px 55px
+        rgba(0,0,0,.40);
+
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    min-width:0;
+
+}
+
+.logo img{
+
+    width:48px;
+    height:48px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:
+        1px solid
+        rgba(214,184,122,.48);
+
+}
+
+.logo-text{
+
+    min-width:0;
+
+}
+
+.logo-text strong{
+
+    display:block;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:17px;
+
+    white-space:nowrap;
+
+}
+
+.logo-text span{
+
+    display:block;
+
+    margin-top:1px;
+
+    color:
+        var(--gold-light);
+
+    font-size:8px;
+
+    letter-spacing:.24em;
+
+    text-transform:uppercase;
+
+}
+
+
+/* =========================================================
+   NAV LINKS
+   ========================================================= */
+
+.nav-links{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:28px;
+
+}
+
+.nav-links a{
+
+    position:relative;
+
+    color:
+        var(--ivory-muted);
+
+    font-size:12px;
+
+    transition:
+        color .3s;
+
+}
+
+.nav-links a:not(.nav-button)::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:-8px;
+
+    width:0;
+
+    height:1px;
+
+    background:
+        var(--gold-light);
+
+    transform:
+        translateX(-50%);
+
+    transition:
+        width .35s var(--ease);
+
+}
+
+.nav-links a:hover{
+
+    color:
+        var(--white);
+
+}
+
+.nav-links a:not(.nav-button):hover::after{
+
+    width:100%;
+
+}
+
+
+/* =========================================================
+   NAV BUTTON
+   ========================================================= */
+
+.nav-button{
+
+    padding:
+        12px 18px;
+
+    border-radius:999px;
+
+    border:
+        1px solid
+        rgba(214,184,122,.4);
+
+    background:
+        rgba(184,146,82,.10);
+
+    color:
+        var(--gold-light)!important;
+
+    font-size:11px!important;
+
+    letter-spacing:.02em;
+
+    transition:
+        background .3s,
+        color .3s,
+        transform .3s;
+
+}
+
+.nav-button:hover{
+
+    background:
+        var(--gold);
+
+    color:
+        #17120f!important;
+
+    transform:
+        translateY(-2px);
+
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+   ========================================================= */
+
+.menu-toggle{
+
+    display:none;
+
+    width:44px;
+    height:44px;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:13px;
+
+    background:
+        var(--glass);
+
+    color:
+        var(--white);
+
+}
+
+.menu-toggle span{
+
+    display:block;
+
+    width:19px;
+    height:1.5px;
+
+    margin:
+        4px
+        auto;
+
+    background:
+        var(--ivory);
+
+    transition:
+        transform .3s,
+        opacity .3s;
+
+}
+
+.menu-toggle.open span:first-child{
+
+    transform:
+        translateY(5.5px)
+        rotate(45deg);
+
+}
+
+.menu-toggle.open span:nth-child(2){
+
+    opacity:0;
+
+}
+
+.menu-toggle.open span:last-child{
+
+    transform:
+        translateY(-5.5px)
+        rotate(-45deg);
+
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero{
+
+    min-height:100vh;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+.hero-image{
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+
+        linear-gradient(
+            90deg,
+            rgba(13,10,8,.94) 0%,
+            rgba(13,10,8,.74) 42%,
+            rgba(13,10,8,.38) 100%
+        ),
+
+        linear-gradient(
+            0deg,
+            rgba(13,10,8,.82),
+            transparent 58%
+        ),
+
+        url("images/hero.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+
+    transform:
+        scale(1.035);
+
+    will-change:
+        transform;
+
+}
+
+.hero-image::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(100,31,43,.16),
+            transparent 45%
+        );
+
+}
+
+
+/* =========================================================
+   HERO CONTENT
+   ========================================================= */
+
+.hero-content{
+
+    width:
+        min(
+            1380px,
+            90%
+        );
+
+    margin:auto;
+
+    position:relative;
+
+    z-index:2;
+
+    padding-top:100px;
+
+}
+
+.hero-kicker{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    padding:
+        8px 13px;
+
+    border:
+        1px solid
+        rgba(214,184,122,.30);
+
+    border-radius:999px;
+
+    background:
+        rgba(184,146,82,.07);
+
+    color:
+        var(--gold-light);
+
+    font-size:9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.22em;
+
+    opacity:0;
+
+    transform:
+        translateY(18px);
+
+    animation:
+        heroIn
+        .8s
+        .15s
+        forwards
+        var(--ease);
+
+}
+
+.hero-kicker i{
+
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:
+        var(--gold-light);
+
+}
+
+.hero h1{
+
+    max-width:920px;
+
+    margin-top:25px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:
+        clamp(
+            58px,
+            8vw,
+            112px
+        );
+
+    line-height:.91;
+
+    letter-spacing:
+        -.055em;
+
+    font-weight:600;
+
+    opacity:0;
+
+    transform:
+        translateY(35px);
+
+    animation:
+        heroIn
+        .95s
+        .3s
+        forwards
+        var(--ease);
+
+}
+
+.hero h1 em{
+
+    color:
+        var(--gold-light);
+
+    font-style:normal;
+
+}
+
+.hero-description{
+
+    max-width:550px;
+
+    margin-top:28px;
+
+    color:
+        var(--ivory-soft);
+
+    font-size:16px;
+
+    line-height:1.8;
+
+    opacity:0;
+
+    transform:
+        translateY(25px);
+
+    animation:
+        heroIn
+        .85s
+        .5s
+        forwards
+        var(--ease);
+
+}
+
+.hero-actions{
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    margin-top:32px;
+
+    opacity:0;
+
+    transform:
+        translateY(20px);
+
+    animation:
+        heroIn
+        .85s
+        .65s
+        forwards
+        var(--ease);
+
+}
+
+@keyframes heroIn{
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+/* =========================================================
+   BUTTON SYSTEM
+   ========================================================= */
+
+.btn{
+
+    position:relative;
+
+    min-height:51px;
+
+    padding:
+        0 21px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:9px;
+
+    border-radius:999px;
+
+    border:
+        1px solid
+        transparent;
+
+    overflow:hidden;
+
+    transition:
+        transform .35s var(--ease),
+        box-shadow .35s,
+        background .35s;
+
+}
+
+.btn span{
+
+    position:relative;
+
+    z-index:2;
+
+}
+
+.btn-primary{
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--gold),
+            var(--gold-light)
+        );
+
+    color:
+        #17120f;
+
+    font-weight:700;
+
+    box-shadow:
+        0 14px 38px
+        rgba(184,146,82,.16);
+
+}
+
+.btn-primary:hover{
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 20px 48px
+        rgba(184,146,82,.25);
+
+}
+
+.btn-outline{
+
+    border-color:
+        rgba(245,239,228,.23);
+
+    background:
+        rgba(255,255,255,.035);
+
+    color:
+        var(--ivory);
+
+}
+
+.btn-outline:hover{
+
+    background:
+        rgba(255,255,255,.08);
+
+    transform:
+        translateY(-3px);
+
+}
+
+
+/* =========================================================
+   HERO SIDE INFO
+   ========================================================= */
+
+.hero-side{
+
+    position:absolute;
+
+    right:0;
+
+    bottom:0;
+
+    display:flex;
+
+    gap:10px;
+
+    opacity:0;
+
+    animation:
+        heroIn
+        .8s
+        .85s
+        forwards
+        var(--ease);
+
+}
+
+.hero-info{
+
+    min-width:135px;
+
+    padding:
+        16px;
+
+    border:
+        1px solid
+        rgba(245,239,228,.10);
+
+    border-radius:17px;
+
+    background:
+        rgba(20,15,12,.45);
+
+    backdrop-filter:
+        blur(14px);
+
+}
+
+.hero-info strong{
+
+    display:block;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    color:
+        var(--gold-light);
+
+    font-size:18px;
+
+}
+
+.hero-info span{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:
+        var(--muted);
+
+    font-size:9px;
+
+    letter-spacing:.12em;
+
+    text-transform:uppercase;
+
+}
+
+
+/* =========================================================
+   HERO SCROLL INDICATOR
+   ========================================================= */
+
+.scroll-indicator{
+
+    position:absolute;
+
+    left:5%;
+
+    bottom:32px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+
+    color:
+        rgba(245,239,228,.52);
+
+    font-size:9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.2em;
+
+}
+
+.scroll-line{
+
+    width:48px;
+    height:1px;
+
+    background:
+        rgba(245,239,228,.25);
+
+}
+
+
+/* =========================================================
+   MARQUEE
+   ========================================================= */
+
+.marquee{
+
+    border-top:
+        1px solid
+        var(--line-soft);
+
+    border-bottom:
+        1px solid
+        var(--line-soft);
+
+    background:
+        rgba(255,255,255,.015);
+
+    overflow:hidden;
+
+}
+
+.marquee-track{
+
+    width:max-content;
+
+    display:flex;
+
+    animation:
+        marquee
+        32s
+        linear
+        infinite;
+
+}
+
+.marquee-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:23px;
+
+    padding:
+        18px 24px;
+
+    color:
+        var(--ivory-soft);
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:16px;
+
+    white-space:nowrap;
+
+}
+
+.marquee-item b{
+
+    color:
+        var(--gold);
+
+    font-size:10px;
+
+}
+
+@keyframes marquee{
+
+    to{
+        transform:
+            translateX(-50%);
+    }
+
+}
+
+
+/* =========================================================
+   GLOBAL SECTION
+   ========================================================= */
+
+.section{
+
+    width:
+        min(
+            1380px,
+            90%
+        );
+
+    margin:auto;
+
+    padding:
+        125px 0;
+
+}
+
+.section-head{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-end;
+
+    gap:40px;
+
+    margin-bottom:60px;
+
+}
+
+.eyebrow{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    color:
+        var(--gold-light);
+
+    font-size:9px;
+
+    letter-spacing:.23em;
+
+    text-transform:uppercase;
+
+    margin-bottom:15px;
+
+}
+
+.eyebrow::before{
+
+    content:"";
+
+    width:23px;
+    height:1px;
+
+    background:
+        var(--gold);
+
+}
+
+.section-title{
+
+    max-width:780px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:
+        clamp(
+            40px,
+            5vw,
+            70px
+        );
+
+    line-height:.99;
+
+    letter-spacing:
+        -.045em;
+
+    font-weight:600;
+
+}
+
+.section-title em{
+
+    color:
+        var(--gold-light);
+
+    font-style:normal;
+
+}
+
+.section-description{
+
+    max-width:430px;
+
+    color:
+        var(--muted);
+
+    font-size:13px;
+
+    line-height:1.85;
+
+}
+
+
+/* =========================================================
+   REVEAL ANIMATION
+   ========================================================= */
+
+.reveal{
+
+    opacity:0;
+
+    transform:
+        translateY(30px);
+
+    transition:
+        opacity .8s var(--ease),
+        transform .8s var(--ease);
+
+}
+
+.reveal.visible{
+
+    opacity:1;
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* =========================================================
+   STORY SECTION
+   ========================================================= */
+
+.story-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        1.05fr
+        .95fr;
+
+    gap:80px;
+
+    align-items:center;
+
+}
+
+.story-image{
+
+    position:relative;
+
+    min-height:650px;
+
+    border-radius:27px;
+
+    overflow:hidden;
+
+    background:
+        var(--bg-card);
+
+}
+
+.story-image img{
+
+    width:100%;
+    height:100%;
+
+    min-height:650px;
+
+    object-fit:cover;
+
+    transition:
+        transform 1s var(--ease);
+
+}
+
+.story-image:hover img{
+
+    transform:
+        scale(1.045);
+
+}
+
+.story-image::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent 55%,
+            rgba(0,0,0,.45)
+        );
+
+    pointer-events:none;
+
+}
+
+.story-badge{
+
+    position:absolute;
+
+    z-index:2;
+
+    right:25px;
+    bottom:25px;
+
+    width:145px;
+    height:145px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    background:
+        rgba(18,13,10,.78);
+
+    backdrop-filter:
+        blur(14px);
+
+    border:
+        1px solid
+        rgba(214,184,122,.36);
+
+}
+
+.story-badge strong{
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    color:
+        var(--gold-light);
+
+    font-size:30px;
+
+}
+
+.story-badge span{
+
+    margin-top:3px;
+
+    color:
+        var(--muted);
+
+    font-size:8px;
+
+    letter-spacing:.13em;
+
+    text-transform:uppercase;
+
+}
+
+.story-copy p{
+
+    margin-top:22px;
+
+    color:
+        var(--muted);
+
+    font-size:14px;
+
+    line-height:1.9;
+
+}
+
+.feature-list{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap:12px;
+
+    margin-top:32px;
+
+}
+
+.feature{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+
+    padding:
+        15px;
+
+    border:
+        1px solid
+        var(--line-soft);
+
+    border-radius:15px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    transition:
+        transform .35s var(--ease),
+        border-color .35s,
+        background .35s;
+
+}
+
+.feature:hover{
+
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(184,146,82,.30);
+
+    background:
+        rgba(255,255,255,.045);
+
+}
+
+.feature-icon{
+
+    width:37px;
+    height:37px;
+
+    flex-shrink:0;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:11px;
+
+    background:
+        rgba(184,146,82,.09);
+
+    color:
+        var(--gold-light);
+
+    font-size:16px;
+
+}
+
+.feature span{
+
+    font-size:11px;
+
+}
+
+
+/* =========================================================
+   INFO STRIP
+   ========================================================= */
+
+.info-strip{
+
+    margin-top:65px;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:21px;
+
+    overflow:hidden;
+
+}
+
+.info-cell{
+
+    padding:
+        27px;
+
+    background:
+        rgba(255,255,255,.018);
+
+    border-right:
+        1px solid
+        var(--line);
+
+}
+
+.info-cell:last-child{
+
+    border-right:0;
+
+}
+
+.info-cell strong{
+
+    display:block;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    color:
+        var(--gold-light);
+
+    font-size:22px;
+
+}
+
+.info-cell span{
+
+    display:block;
+
+    margin-top:5px;
+
+    color:
+        var(--muted);
+
+    font-size:10px;
+
+    letter-spacing:.12em;
+
+    text-transform:uppercase;
+
+}
+
+
+/* =========================================================
+   EXPERIENCE / DINING
+   ========================================================= */
+
+.experience-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:17px;
+
+}
+
+.experience-card{
+
+    min-height:340px;
+
+    position:relative;
+
+    padding:30px;
+
+    overflow:hidden;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.018)
+        );
+
+    transition:
+        transform .45s var(--ease),
+        border-color .35s;
+
+}
+
+.experience-card::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+    height:180px;
+
+    right:-100px;
+    bottom:-100px;
+
+    border-radius:50%;
+
+    background:
+        rgba(100,31,43,.18);
+
+    transition:
+        transform .5s var(--ease);
+
+}
+
+.experience-card:hover{
+
+    transform:
+        translateY(-7px);
+
+    border-color:
+        rgba(184,146,82,.35);
+
+}
+
+.experience-card:hover::before{
+
+    transform:
+        scale(1.25);
+
+}
+
+.card-number{
+
+    position:absolute;
+
+    top:23px;
+    right:25px;
+
+    color:
+        rgba(245,239,228,.065);
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:65px;
+
+}
+
+.experience-icon{
+
+    width:58px;
+    height:58px;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(184,146,82,.14),
+            rgba(100,31,43,.12)
+        );
+
+    border:
+        1px solid
+        rgba(184,146,82,.20);
+
+    color:
+        var(--gold-light);
+
+    font-size:23px;
+
+}
+
+.experience-card h3{
+
+    margin-top:80px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:28px;
+
+}
+
+.experience-card p{
+
+    margin-top:11px;
+
+    max-width:340px;
+
+    color:
+        var(--muted);
+
+    font-size:13px;
+
+    line-height:1.75;
+
+}
+
+.card-arrow{
+
+    position:absolute;
+
+    right:25px;
+    bottom:25px;
+
+    width:40px;
+    height:40px;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.05);
+
+    color:
+        var(--gold-light);
+
+    transition:
+        transform .35s,
+        background .35s,
+        color .35s;
+
+}
+
+.experience-card:hover .card-arrow{
+
+    transform:
+        rotate(-35deg);
+
+    background:
+        var(--gold);
+
+    color:
+        #111;
+
+}
+
+
+/* =========================================================
+   MENU SECTION
+   ========================================================= */
+
+.menu-tabs{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-bottom:28px;
+
+}
+
+.menu-tab{
+
+    padding:
+        10px 17px;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    color:
+        var(--muted);
+
+    font-size:11px;
+
+    transition:
+        background .3s,
+        color .3s,
+        border-color .3s;
+
+}
+
+.menu-tab:hover{
+
+    color:
+        var(--ivory);
+
+    border-color:
+        rgba(184,146,82,.35);
+
+}
+
+.menu-tab.active{
+
+    background:
+        var(--gold);
+
+    color:
+        #17120f;
+
+    border-color:
+        var(--gold);
+
+}
+
+
+/* =========================================================
+   MENU GRID
+   ========================================================= */
+
+.menu-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:13px;
+
+}
+
+.menu-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:17px;
+
+    min-width:0;
+
+    padding:
+        16px;
+
+    border:
+        1px solid
+        var(--line-soft);
+
+    border-radius:19px;
+
+    background:
+        rgba(255,255,255,.022);
+
+    transition:
+        transform .35s var(--ease),
+        border-color .35s,
+        background .35s;
+
+}
+
+.menu-item:hover{
+
+    transform:
+        translateX(5px);
+
+    border-color:
+        rgba(184,146,82,.27);
+
+    background:
+        rgba(184,146,82,.035);
+
+}
+
+.menu-item.hidden{
+
+    display:none;
+
+}
+
+.menu-photo{
+
+    width:94px;
+    height:94px;
+
+    flex-shrink:0;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    background:
+        var(--bg-card);
+
+}
+
+.menu-photo img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    transition:
+        transform .55s var(--ease);
+
+}
+
+.menu-item:hover .menu-photo img{
+
+    transform:
+        scale(1.07);
+
+}
+
+.menu-info{
+
+    min-width:0;
+
+    flex:1;
+
+}
+
+.menu-info h3{
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:19px;
+
+}
+
+.menu-info p{
+
+    margin-top:5px;
+
+    color:
+        var(--muted);
+
+    font-size:11px;
+
+    line-height:1.55;
+
+}
+
+.menu-tag{
+
+    align-self:flex-start;
+
+    padding:
+        5px 8px;
+
+    border:
+        1px solid
+        rgba(184,146,82,.23);
+
+    border-radius:999px;
+
+    color:
+        var(--gold-light);
+
+    font-size:8px;
+
+    letter-spacing:.1em;
+
+    text-transform:uppercase;
+
+}
+
+
+/* =========================================================
+   MENU FEATURE BANNER
+   ========================================================= */
+
+.feature-banner{
+
+    min-height:450px;
+
+    margin-top:22px;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    border-radius:28px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(14,10,8,.95),
+            rgba(14,10,8,.62),
+            rgba(14,10,8,.22)
+        ),
+
+        url("images/img-4.jpg")
+        center/cover;
+
+}
+
+.feature-banner-content{
+
+    width:
+        min(
+            620px,
+            88%
+        );
+
+    margin-left:7%;
+
+}
+
+.feature-banner h2{
+
+    max-width:650px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:
+        clamp(
+            40px,
+            5vw,
+            68px
+        );
+
+    line-height:.98;
+
+    letter-spacing:
+        -.04em;
+
+}
+
+.feature-banner p{
+
+    max-width:510px;
+
+    margin-top:18px;
+
+    color:
+        var(--ivory-soft);
+
+    font-size:14px;
+
+    line-height:1.8;
+
+}
+
+
+/* =========================================================
+   GALLERY
+   ========================================================= */
+
+.gallery-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        1.25fr
+        .75fr
+        .9fr;
+
+    grid-auto-rows:
+        235px;
+
+    gap:13px;
+
+}
+
+.gallery-item{
+
+    position:relative;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    border:
+        1px solid
+        var(--line-soft);
+
+    cursor:pointer;
+
+    background:
+        var(--bg-card);
+
+}
+
+.gallery-item:nth-child(1){
+
+    grid-row:
+        span 2;
+
+}
+
+.gallery-item:nth-child(4){
+
+    grid-column:
+        span 2;
+
+}
+
+.gallery-item img{
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    transition:
+        transform .7s var(--ease),
+        filter .7s;
+
+}
+
+.gallery-overlay{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    padding:20px;
+
+    background:
+        linear-gradient(
+            transparent 45%,
+            rgba(0,0,0,.72)
+        );
+
+    opacity:0;
+
+    transition:
+        opacity .35s;
+
+}
+
+.gallery-overlay span{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    color:
+        var(--white);
+
+    font-size:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.13em;
+
+}
+
+.gallery-item:hover img{
+
+    transform:
+        scale(1.06);
+
+    filter:
+        saturate(1.06);
+
+}
+
+.gallery-item:hover .gallery-overlay{
+
+    opacity:1;
+
+}
+
+
+/* =========================================================
+   LIGHTBOX
+   ========================================================= */
+
+.lightbox{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:10000;
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:30px;
+
+    background:
+        rgba(7,5,4,.94);
+
+    backdrop-filter:
+        blur(14px);
+
+}
+
+.lightbox.open{
+
+    display:flex;
+
+}
+
+.lightbox img{
+
+    max-width:
+        min(
+            1050px,
+            92vw
+        );
+
+    max-height:
+        84vh;
+
+    border-radius:17px;
+
+    box-shadow:
+        0 40px 100px
+        rgba(0,0,0,.65);
+
+    animation:
+        lightboxIn
+        .4s
+        var(--ease);
+
+}
+
+@keyframes lightboxIn{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            scale(.94);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            scale(1);
+
+    }
+
+}
+
+.lightbox-close{
+
+    position:absolute;
+
+    top:24px;
+    right:28px;
+
+    width:47px;
+    height:47px;
+
+    display:grid;
+
+    place-items:center;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color:
+        var(--white);
+
+    font-size:22px;
+
+}
+
+
+/* =========================================================
+   RESERVATION CTA
+   ========================================================= */
+
+.cta{
+
+    width:
+        min(
+            1380px,
+            90%
+        );
+
+    min-height:490px;
+
+    margin:
+        0 auto
+        120px;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+
+    overflow:hidden;
+
+    border-radius:32px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(17,12,10,.97),
+            rgba(17,12,10,.72)
+        ),
+
+        url("images/img-3.jpg")
+        center/cover;
+
+}
+
+.cta::after{
+
+    content:"";
+
+    position:absolute;
+
+    right:-180px;
+    top:-180px;
+
+    width:500px;
+    height:500px;
+
+    border-radius:50%;
+
+    border:
+        1px solid
+        rgba(214,184,122,.16);
+
+    box-shadow:
+        0 0 0 60px
+        rgba(184,146,82,.025);
+
+}
+
+.cta-content{
+
+    position:relative;
+
+    z-index:2;
+
+    width:
+        min(
+            680px,
+            88%
+        );
+
+    margin-left:7%;
+
+}
+
+.cta h2{
+
+    max-width:700px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:
+        clamp(
+            46px,
+            6vw,
+            80px
+        );
+
+    line-height:.94;
+
+    letter-spacing:
+        -.05em;
+
+}
+
+.cta h2 em{
+
+    color:
+        var(--gold-light);
+
+    font-style:normal;
+
+}
+
+.cta p{
+
+    max-width:540px;
+
+    margin-top:20px;
+
+    color:
+        var(--ivory-soft);
+
+    font-size:14px;
+
+    line-height:1.8;
+
+}
+
+
+/* =========================================================
+   RESERVATION / CONTACT SECTION
+   ========================================================= */
+
+.reservation-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        .75fr
+        1.25fr;
+
+    gap:25px;
+
+}
+
+.reservation-info{
+
+    display:grid;
+
+    gap:13px;
+
+}
+
+.contact-card{
+
+    padding:23px;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:19px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    transition:
+        transform .35s var(--ease),
+        border-color .35s;
+
+}
+
+.contact-card:hover{
+
+    transform:
+        translateX(5px);
+
+    border-color:
+        rgba(184,146,82,.30);
+
+}
+
+.contact-icon{
+
+    width:41px;
+    height:41px;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:12px;
+
+    background:
+        rgba(184,146,82,.09);
+
+    color:
+        var(--gold-light);
+
+}
+
+.contact-card h3{
+
+    margin-top:14px;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:20px;
+
+}
+
+.contact-card p,
+.contact-card a{
+
+    display:block;
+
+    margin-top:5px;
+
+    color:
+        var(--muted);
+
+    font-size:12px;
+
+    line-height:1.7;
+
+}
+
+.contact-card a:hover{
+
+    color:
+        var(--gold-light);
+
+}
+
+
+/* =========================================================
+   HOURS CARD
+   ========================================================= */
+
+.hours-card{
+
+    padding:
+        28px;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.018)
+        );
+
+}
+
+.hours-title{
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:28px;
+
+}
+
+.hours-sub{
+
+    margin-top:6px;
+
+    color:
+        var(--muted);
+
+    font-size:12px;
+
+}
+
+.hours-list{
+
+    margin-top:23px;
+
+}
+
+.hours-row{
+
+    display:grid;
+
+    grid-template-columns:
+        100px
+        1fr;
+
+    gap:15px;
+
+    padding:
+        12px 0;
+
+    border-bottom:
+        1px solid
+        var(--line-soft);
+
+}
+
+.hours-row:last-child{
+
+    border-bottom:0;
+
+}
+
+.hours-day{
+
+    color:
+        var(--ivory);
+
+    font-size:11px;
+
+}
+
+.hours-time{
+
+    color:
+        var(--muted);
+
+    font-size:11px;
+
+    line-height:1.7;
+
+}
+
+.hours-row.closed .hours-time{
+
+    color:
+        var(--burgundy-light);
+
+}
+
+
+/* =========================================================
+   RESERVATION FORM
+   ========================================================= */
+
+.reservation-form{
+
+    padding:
+        35px;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.018)
+        );
+
+}
+
+.form-title{
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:31px;
+
+}
+
+.form-sub{
+
+    margin-top:7px;
+
+    color:
+        var(--muted);
+
+    font-size:12px;
+
+    line-height:1.6;
+
+}
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    gap:13px;
+
+    margin-top:25px;
+
+}
+
+.input{
+
+    width:100%;
+
+    padding:
+        15px 16px;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:13px;
+
+    outline:none;
+
+    background:
+        rgba(0,0,0,.16);
+
+    color:
+        var(--white);
+
+    transition:
+        border-color .3s,
+        box-shadow .3s;
+
+}
+
+.input::placeholder{
+
+    color:
+        #766e66;
+
+}
+
+.input:focus{
+
+    border-color:
+        rgba(214,184,122,.70);
+
+    box-shadow:
+        0 0 0 4px
+        rgba(184,146,82,.06);
+
+}
+
+select.input{
+
+    appearance:auto;
+
+}
+
+textarea.input{
+
+    min-height:125px;
+
+    resize:vertical;
+
+}
+
+.form-full{
+
+    grid-column:
+        1 / -1;
+
+}
+
+.form-note{
+
+    margin-top:12px;
+
+    color:
+        var(--muted-dark);
+
+    font-size:10px;
+
+    line-height:1.6;
+
+}
+
+
+/* =========================================================
+   FAQ
+   ========================================================= */
+
+.faq-section{
+
+    padding-top:20px;
+
+}
+
+.faq-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        .75fr
+        1.25fr;
+
+    gap:70px;
+
+}
+
+.faq-intro p{
+
+    margin-top:18px;
+
+    color:
+        var(--muted);
+
+    font-size:13px;
+
+    line-height:1.8;
+
+}
+
+.faq{
+
+    border-top:
+        1px solid
+        var(--line);
+
+}
+
+.faq-item{
+
+    border-bottom:
+        1px solid
+        var(--line);
+
+}
+
+.faq-question{
+
+    width:100%;
+
+    padding:
+        22px 0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    background:none;
+
+    border:0;
+
+    color:
+        var(--ivory);
+
+    text-align:left;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:18px;
+
+}
+
+.faq-plus{
+
+    width:29px;
+    height:29px;
+
+    flex-shrink:0;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.05);
+
+    color:
+        var(--gold-light);
+
+    font-family:
+        "DM Sans",
+        sans-serif;
+
+    transition:
+        transform .35s,
+        background .35s,
+        color .35s;
+
+}
+
+.faq-answer{
+
+    max-height:0;
+
+    overflow:hidden;
+
+    transition:
+        max-height .45s
+        var(--ease);
+
+}
+
+.faq-answer p{
+
+    padding-bottom:21px;
+
+    color:
+        var(--muted);
+
+    font-size:12px;
+
+    line-height:1.8;
+
+}
+
+.faq-item.open .faq-plus{
+
+    transform:
+        rotate(45deg);
+
+    background:
+        var(--gold);
+
+    color:
+        #111;
+
+}
+
+.faq-item.open .faq-answer{
+
+    max-height:180px;
+
+}
+
+
+/* =========================================================
+   MAP / LOCATION CARD
+   ========================================================= */
+
+.location-panel{
+
+    margin-top:30px;
+
+    min-height:330px;
+
+    position:relative;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    overflow:hidden;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:25px;
+
+    background:
+
+        linear-gradient(
+            0deg,
+            rgba(13,9,7,.96),
+            rgba(13,9,7,.35)
+        ),
+
+        url("images/img-2.jpg")
+        center/cover;
+
+}
+
+.location-content{
+
+    width:
+        min(
+            550px,
+            90%
+        );
+
+    padding:
+        30px;
+
+}
+
+.location-content h3{
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:30px;
+
+}
+
+.location-content p{
+
+    margin-top:8px;
+
+    color:
+        var(--ivory-soft);
+
+    font-size:12px;
+
+    line-height:1.7;
+
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer{
+
+    border-top:
+        1px solid
+        var(--line);
+
+    padding:
+        55px
+        5%
+        25px;
+
+}
+
+.footer-inner{
+
+    width:
+        min(
+            1380px,
+            100%
+        );
+
+    margin:auto;
+
+}
+
+.footer-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:50px;
+
+    padding-bottom:45px;
+
+}
+
+.footer-brand{
+
+    max-width:390px;
+
+}
+
+.footer-brand h2{
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size:29px;
+
+}
+
+.footer-brand p{
+
+    margin-top:11px;
+
+    color:
+        var(--muted);
+
+    font-size:12px;
+
+    line-height:1.8;
+
+}
+
+.socials{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-top:19px;
+
+}
+
+.social{
+
+    width:39px;
+    height:39px;
+
+    display:grid;
+
+    place-items:center;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:50%;
+
+    color:
+        var(--muted);
+
+    font-size:10px;
+
+    transition:
+        transform .3s,
+        background .3s,
+        color .3s,
+        border-color .3s;
+
+}
+
+.social:hover{
+
+    transform:
+        translateY(-3px);
+
+    background:
+        var(--gold);
+
+    border-color:
+        var(--gold);
+
+    color:
+        #111;
+
+}
+
+.footer-links{
+
+    display:flex;
+
+    gap:55px;
+
+}
+
+.footer-column h4{
+
+    margin-bottom:15px;
+
+    color:
+        var(--gold-light);
+
+    font-size:9px;
+
+    letter-spacing:.18em;
+
+    text-transform:uppercase;
+
+}
+
+.footer-column a{
+
+    display:block;
+
+    margin-bottom:9px;
+
+    color:
+        var(--muted);
+
+    font-size:11px;
+
+    transition:
+        color .3s,
+        transform .3s;
+
+}
+
+.footer-column a:hover{
+
+    color:
+        var(--ivory);
+
+    transform:
+        translateX(3px);
+
+}
+
+.footer-bottom{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:20px;
+
+    padding-top:21px;
+
+    border-top:
+        1px solid
+        var(--line);
+
+    color:
+        var(--muted-dark);
+
+    font-size:10px;
+
+}
+
+
+/* =========================================================
+   FLOATING WHATSAPP
+   ========================================================= */
+
+.whatsapp{
+
+    position:fixed;
+
+    right:24px;
+    bottom:23px;
+
+    z-index:4000;
+
+}
+
+.whatsapp a{
+
+    width:56px;
+    height:56px;
+
+    display:grid;
+
+    place-items:center;
+
+    border-radius:50%;
+
+    background:
+        #24c96f;
+
+    color:
+        white;
+
+    font-size:19px;
+
+    box-shadow:
+        0 13px 35px
+        rgba(36,201,111,.20);
+
+    transition:
+        transform .3s,
+        box-shadow .3s;
+
+}
+
+.whatsapp a:hover{
+
+    transform:
+        translateY(-4px);
+
+    box-shadow:
+        0 18px 45px
+        rgba(36,201,111,.32);
+
+}
+
+
+/* =========================================================
+   BACK TO TOP
+   ========================================================= */
+
+.to-top{
+
+    position:fixed;
+
+    right:24px;
+    bottom:91px;
+
+    width:40px;
+    height:40px;
+
+    display:grid;
+
+    place-items:center;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:50%;
+
+    background:
+        rgba(17,12,10,.84);
+
+    backdrop-filter:
+        blur(12px);
+
+    color:
+        var(--gold-light);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transform:
+        translateY(12px);
+
+    transition:
+        opacity .35s,
+        visibility .35s,
+        transform .35s;
+
+    z-index:3999;
+
+}
+
+.to-top.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+    transform:
+        translateY(0);
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:1050px){
+
+    .nav-links{
+
+        position:absolute;
+
+        top:82px;
+
+        left:0;
+        right:0;
+
+        display:none;
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+        gap:2px;
+
+        padding:17px;
+
+        border:
+            1px solid
+            var(--line);
+
+        border-radius:19px;
+
+        background:
+            rgba(14,11,9,.96);
+
+        backdrop-filter:
+            blur(20px);
+
+        box-shadow:
+            0 25px 60px
+            rgba(0,0,0,.35);
+
+    }
+
+    .nav-links.open{
+
+        display:flex;
+
+        animation:
+            mobileMenu
+            .35s
+            var(--ease);
+
+    }
+
+    @keyframes mobileMenu{
+
+        from{
+
+            opacity:0;
+
+            transform:
+                translateY(-8px);
+
+        }
+
+        to{
+
+            opacity:1;
+
+            transform:
+                translateY(0);
+
+        }
+
+    }
+
+    .nav-links a{
+
+        padding:
+            12px;
+
+    }
+
+    .nav-links a::after{
+
+        display:none!important;
+
+    }
+
+    .nav-button{
+
+        text-align:center;
+
+        margin-top:4px;
+
+    }
+
+    .menu-toggle{
+
+        display:block;
+
+    }
+
+    .story-grid{
+
+        grid-template-columns:
+            1fr;
+
+        gap:45px;
+
+    }
+
+    .story-image,
+    .story-image img{
+
+        min-height:520px;
+
+    }
+
+    .experience-grid{
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+    .reservation-grid{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .faq-grid{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .gallery-grid{
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+    .gallery-item:nth-child(1){
+
+        grid-row:
+            span 1;
+
+    }
+
+    .gallery-item:nth-child(4){
+
+        grid-column:
+            span 1;
+
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media(max-width:760px){
+
+    .cursor-dot,
+    .cursor-ring{
+
+        display:none;
+
+    }
+
+    .nav{
+
+        padding:
+            12px 4%;
+
+    }
+
+    .nav.scrolled{
+
+        padding:
+            8px 4%;
+
+    }
+
+    .nav-inner{
+
+        height:64px;
+
+    }
+
+    .logo img{
+
+        width:43px;
+        height:43px;
+
+    }
+
+    .logo-text strong{
+
+        font-size:14px;
+
+    }
+
+    .logo-text span{
+
+        font-size:7px;
+
+    }
+
+    .hero{
+
+        min-height:820px;
+
+    }
+
+    .hero-image{
+
+        background-position:
+            60%
+            center;
+
+    }
+
+    .hero-content{
+
+        padding-top:75px;
+
+    }
+
+    .hero h1{
+
+        font-size:
+            clamp(
+                53px,
+                15vw,
+                72px
+            );
+
+    }
+
+    .hero-description{
+
+        font-size:14px;
+
+        max-width:500px;
+
+    }
+
+    .hero-actions{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+        max-width:350px;
+
+    }
+
+    .btn{
+
+        width:100%;
+
+    }
+
+    .hero-side{
+
+        position:relative;
+
+        right:auto;
+        bottom:auto;
+
+        margin-top:45px;
+
+        display:grid;
+
+        grid-template-columns:
+            repeat(3,1fr);
+
+    }
+
+    .hero-info{
+
+        min-width:0;
+
+        padding:13px;
+
+    }
+
+    .hero-info strong{
+
+        font-size:15px;
+
+    }
+
+    .hero-info span{
+
+        font-size:7px;
+
+    }
+
+    .scroll-indicator{
+
+        display:none;
+
+    }
+
+    .section{
+
+        padding:
+            85px 0;
+
+    }
+
+    .section-head{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:22px;
+
+        margin-bottom:42px;
+
+    }
+
+    .section-title{
+
+        font-size:
+            clamp(
+                39px,
+                11vw,
+                55px
+            );
+
+    }
+
+    .story-image,
+    .story-image img{
+
+        min-height:430px;
+
+    }
+
+    .feature-list{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .info-strip{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .info-cell{
+
+        border-right:0;
+
+        border-bottom:
+            1px solid
+            var(--line);
+
+    }
+
+    .info-cell:last-child{
+
+        border-bottom:0;
+
+    }
+
+    .experience-grid{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .menu-grid{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .feature-banner{
+
+        min-height:480px;
+
+    }
+
+    .gallery-grid{
+
+        grid-template-columns:
+            1fr 1fr;
+
+        grid-auto-rows:
+            185px;
+
+    }
+
+    .gallery-item:nth-child(1){
+
+        grid-column:
+            span 2;
+
+    }
+
+    .cta{
+
+        min-height:500px;
+
+        margin-bottom:
+            85px;
+
+    }
+
+    .cta-content{
+
+        margin-left:6%;
+
+    }
+
+    .form-grid{
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .form-full{
+
+        grid-column:
+            auto;
+
+    }
+
+    .reservation-form{
+
+        padding:
+            24px;
+
+    }
+
+    .hours-row{
+
+        grid-template-columns:
+            85px
+            1fr;
+
+    }
+
+    .location-panel{
+
+        min-height:350px;
+
+    }
+
+    .footer-top{
+
+        flex-direction:
+            column;
+
+    }
+
+    .footer-links{
+
+        flex-wrap:wrap;
+
+        gap:30px;
+
+    }
+
+    .footer-bottom{
+
+        flex-direction:
+            column;
+
+        gap:7px;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media(max-width:480px){
+
+    .hero{
+
+        min-height:850px;
+
+    }
+
+    .hero h1{
+
+        font-size:
+            52px;
+
+    }
+
+    .hero-side{
+
+        gap:7px;
+
+    }
+
+    .hero-info{
+
+        padding:11px;
+
+    }
+
+    .hero-info strong{
+
+        font-size:14px;
+
+    }
+
+    .hero-info span{
+
+        letter-spacing:.06em;
+
+    }
+
+    .story-badge{
+
+        width:120px;
+        height:120px;
+
+        right:17px;
+        bottom:17px;
+
+    }
+
+    .story-badge strong{
+
+        font-size:25px;
+
+    }
+
+    .menu-item{
+
+        align-items:flex-start;
+
+    }
+
+    .menu-photo{
+
+        width:76px;
+        height:76px;
+
+    }
+
+    .menu-info h3{
+
+        font-size:17px;
+
+    }
+
+    .menu-tag{
+
+        display:none;
+
+    }
+
+    .gallery-grid{
+
+        grid-auto-rows:
+            155px;
+
+    }
+
+    .feature-banner-content{
+
+        margin-left:6%;
+
+    }
+
+    .cta-content{
+
+        width:88%;
+
+    }
+
+    .cta h2{
+
+        font-size:48px;
+
+    }
+
+    .whatsapp{
+
+        right:18px;
+
+        bottom:18px;
+
+    }
+
+    .to-top{
+
+        right:18px;
+
+        bottom:83px;
+
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+    html{
+
+        scroll-behavior:auto;
+
+    }
+
+    *,
+    *::before,
+    *::after{
+
+        animation-duration:
+            .01ms!important;
+
+        animation-iteration-count:
+            1!important;
+
+        transition-duration:
+            .01ms!important;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     LOADER
+     ===================================================== -->
+
+<div
+    class="loader"
+    id="loader">
+
+    <div class="loader-inner">
+
+        <img
+            class="loader-logo"
+            src="images/logo.png"
+            alt="Castelli's Restaurant">
+
+        <div class="loader-name">
+            Castelli's
+        </div>
+
+        <div class="loader-sub">
+            Italian Restaurant
+        </div>
+
+        <div class="loader-line">
+            <span></span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SCROLL PROGRESS
+     ===================================================== -->
+
+<div
+    class="progress"
+    id="progress">
+</div>
+
+
+<!-- =====================================================
+     CUSTOM CURSOR
+     ===================================================== -->
+
+<div
+    class="cursor-dot"
+    id="cursorDot">
+</div>
+
+<div
+    class="cursor-ring"
+    id="cursorRing">
+</div>
+
+
+<!-- =====================================================
+     AMBIENT BACKGROUND
+     ===================================================== -->
+
+<div class="ambient">
+
+    <div class="ambient-glow one"></div>
+
+    <div class="ambient-glow two"></div>
+
+</div>
+
+
+<!-- =====================================================
+     NAVIGATION
+     ===================================================== -->
+
+<header
+    class="nav"
+    id="nav">
+
+    <div class="nav-inner">
+
+
+        <a
+            href="#home"
+            class="logo">
+
+            <img
+                src="images/logo.png"
+                alt="Castelli's Restaurant logo">
+
+            <div class="logo-text">
+
+                <strong>
+                    Castelli's
+                </strong>
+
+                <span>
+                    Italian Restaurant
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <nav
+            class="nav-links"
+            id="navLinks">
+
+            <a href="#home">
+                Home
+            </a>
+
+            <a href="#story">
+                About
+            </a>
+
+            <a href="#experience">
+                Experience
+            </a>
+
+            <a href="#menu">
+                Menu
+            </a>
+
+            <a href="#gallery">
+                Gallery
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
+
+            <a
+                href="#reservation"
+                class="nav-button">
+
+                Reserve a Table
+
+            </a>
+
+        </nav>
+
+
+        <button
+            class="menu-toggle"
+            id="menuToggle"
+            aria-label="Open navigation menu">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </button>
+
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     HERO
+     ===================================================== -->
+
+<section
+    class="hero"
+    id="home">
+
+
+    <div class="hero-image"></div>
+
+
+    <div class="hero-content">
+
+
+        <div class="hero-kicker">
+
+            <i></i>
+
+            Piazza · Addis Ababa
+
+        </div>
+
+
+        <h1>
+
+            Italian
+            <em>
+                tradition.
+            </em>
+
+            Refined dining.
+
+        </h1>
+
+
+        <p class="hero-description">
+
+            Authentic Italian pasta, steaks,
+            premium wines and formal dining
+            in the heart of Piazza, Addis Ababa.
+
+        </p>
+
+
+        <div class="hero-actions">
+
+
+            <a
+                href="#reservation"
+                class="btn btn-primary magnetic">
+
+                <span>
+                    Reserve a Table →
+                </span>
+
+            </a>
+
+
+            <a
+                href="https://maps.google.com/?q=9.0321103,38.7528244"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-outline magnetic">
+
+                <span>
+                    Find Castelli's ↗
+                </span>
+
+            </a>
+
+
+        </div>
+
+
+        <div class="hero-side">
+
+
+            <div class="hero-info">
+
+                <strong>
+                    12–3
+                </strong>
+
+                <span>
+                    Lunch
+                </span>
+
+            </div>
+
+
+            <div class="hero-info">
+
+                <strong>
+                    7–10
+                </strong>
+
+                <span>
+                    Dinner
+                </span>
+
+            </div>
+
+
+            <div class="hero-info">
+
+                <strong>
+                    Mon–Sat
+                </strong>
+
+                <span>
+                    Open
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div class="scroll-indicator">
+
+        <div class="scroll-line"></div>
+
+        Discover Castelli's
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     MARQUEE
+     ===================================================== -->
+
+<div class="marquee">
+
+    <div class="marquee-track">
+
+
+        <div class="marquee-item">
+            Italian cuisine
+            <b>✦</b>
+        </div>
+
+
+        <div class="marquee-item">
+            Formal dining
+            <b>✦</b>
+        </div>
+
+
+        <div class="marquee-item">
+            Premium wines
+            <b>✦</b>
+        </div>
+
+
+        <div class="marquee-item">
+            Pasta & steaks
+            <b>✦</b>
+        </div>
+
+
+        <div class="marquee-item">
+            Piazza · Addis Ababa
+            <b>✦</b>
+        </div>
+
+
+        <div class="marquee-item">
+            Italian cuisine
+            <b>✦</b>
+        </div>
+
+
+        <div class="marquee-item">
+            Formal dining
+            <b>✦</b>
+        </div>
+
+
+        <div class="marquee-item">
+            Premium wines
+            <b>✦</b>
+        </div>
+
+
+        <div class="marquee-item">
+            Pasta & steaks
+            <b>✦</b>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     STORY
+     ===================================================== -->
+
+<section
+    class="section"
+    id="story">
+
+
+    <div class="section-head reveal">
+
+
+        <div>
+
+            <div class="eyebrow">
+                The Castelli's experience
+            </div>
+
+            <h2 class="section-title">
+
+                A refined setting
+                for <em>Italian dining.</em>
+
+            </h2>
+
+        </div>
+
+
+        <p class="section-description">
+
+            Discover a formal dining experience
+            centered around authentic Italian food,
+            carefully chosen wines and an elegant
+            atmosphere in Piazza.
+
+        </p>
+
+
+    </div>
+
+
+    <div class="story-grid">
+
+
+        <div
+            class="story-image reveal">
+
+            <img
+                src="images/img-1.jpg"
+                alt="Castelli's Restaurant"
+                loading="lazy">
+
+            <div class="story-badge">
+
+                <strong>
+                    C
+                </strong>
+
+                <span>
+                    Castelli's<br>
+                    Addis Ababa
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="story-copy reveal">
+
+
+            <div class="eyebrow">
+                Italian dining
+            </div>
+
+
+            <h3 class="section-title">
+
+                Crafted around
+                <em>the table.</em>
+
+            </h3>
+
+
+            <p>
+
+                Castelli's Restaurant brings an
+                Italian dining experience to
+                Piazza, Addis Ababa, with a focus
+                on authentic pasta, steaks, premium
+                wines and formal dining.
+
+            </p>
+
+
+            <p>
+
+                The experience is designed for
+                guests who appreciate a more
+                refined setting, whether visiting
+                for an important dinner, a relaxed
+                lunch or an evening in the city.
+
+            </p>
+
+
+            <div class="feature-list">
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🍝
+                    </div>
+
+                    <span>
+                        Authentic Italian Pasta
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🥩
+                    </div>
+
+                    <span>
+                        Premium Steaks
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        🍷
+                    </div>
+
+                    <span>
+                        Premium Wines
+                    </span>
+
+                </div>
+
+
+                <div class="feature">
+
+                    <div class="feature-icon">
+                        ✦
+                    </div>
+
+                    <span>
+                        Formal Dining
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+    <div class="info-strip reveal">
+
+
+        <div class="info-cell">
+
+            <strong>
+                Piazza
+            </strong>
+
+            <span>
+                Addis Ababa
+            </span>
+
+        </div>
+
+
+        <div class="info-cell">
+
+            <strong>
+                Mon–Sat
+            </strong>
+
+            <span>
+                Dining Days
+            </span>
+
+        </div>
+
+
+        <div class="info-cell">
+
+            <strong>
+                12–3 · 7–10
+            </strong>
+
+            <span>
+                Lunch & Dinner
+            </span>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     EXPERIENCE
+     ===================================================== -->
+
+<section
+    class="section"
+    id="experience">
+
+
+    <div class="section-head reveal">
+
+
+        <div>
+
+            <div class="eyebrow">
+                Dining experience
+            </div>
+
+            <h2 class="section-title">
+
+                Made for
+                <em>the occasion.</em>
+
+            </h2>
+
+        </div>
+
+
+        <p class="section-description">
+
+            A premium dining environment for
+            guests looking for Italian food,
+            formal service and an elevated
+            evening in Addis Ababa.
+
+        </p>
+
+
+    </div>
+
+
+    <div class="experience-grid">
+
+
+        <article
+            class="experience-card reveal">
+
+
+            <div class="card-number">
+                01
+            </div>
+
+
+            <div class="experience-icon">
+                🍝
+            </div>
+
+
+            <h3>
+                Italian Cuisine
+            </h3>
+
+
+            <p>
+
+                Authentic Italian pasta and
+                carefully prepared dishes
+                designed around classic
+                Italian dining.
+
+            </p>
+
+
+            <div class="card-arrow">
+                ↗
+            </div>
+
+
+        </article>
+
+
+        <article
+            class="experience-card reveal">
+
+
+            <div class="card-number">
+                02
+            </div>
+
+
+            <div class="experience-icon">
+                🥩
+            </div>
+
+
+            <h3>
+                Refined Dining
+            </h3>
+
+
+            <p>
+
+                A formal restaurant setting
+                suited to guests looking for
+                a more elevated dining
+                experience.
+
+            </p>
+
+
+            <div class="card-arrow">
+                ↗
+            </div>
+
+
+        </article>
+
+
+        <article
+            class="experience-card reveal">
+
+
+            <div class="card-number">
+                03
+            </div>
+
+
+            <div class="experience-icon">
+                🍷
+            </div>
+
+
+            <h3>
+                Wine & Evening
+            </h3>
+
+
+            <p>
+
+                Premium wines complement
+                the menu and create a more
+                complete Italian dining
+                experience.
+
+            </p>
+
+
+            <div class="card-arrow">
+                ↗
+            </div>
+
+
+        </article>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     MENU
+     ===================================================== -->
+
+<section
+    class="section"
+    id="menu">
+
+
+    <div class="section-head reveal">
+
+
+        <div>
+
+            <div class="eyebrow">
+                The menu
+            </div>
+
+            <h2 class="section-title">
+
+                Italian classics,
+                <em>beautifully presented.</em>
+
+            </h2>
+
+        </div>
+
+
+        <p class="section-description">
+
+            Explore the culinary focus of
+            Castelli's. For current dishes
+            and availability, contact the
+            restaurant directly.
+
+        </p>
+
+
+    </div>
+
+
+    <div class="menu-tabs reveal">
+
+
+        <button
+            class="menu-tab active"
+            data-filter="all">
+
+            All
+
+        </button>
+
+
+        <button
+            class="menu-tab"
+            data-filter="pasta">
+
+            Pasta
+
+        </button>
+
+
+        <button
+            class="menu-tab"
+            data-filter="steak">
+
+            Steaks
+
+        </button>
+
+
+        <button
+            class="menu-tab"
+            data-filter="wine">
+
+            Wine
+
+        </button>
+
+
+        <button
+            class="menu-tab"
+            data-filter="dining">
+
+            Dining
+
+        </button>
+
+
+    </div>
+
+
+    <div class="menu-grid">
+
+
+        <article
+            class="menu-item reveal"
+            data-category="pasta">
+
+
+            <div class="menu-photo">
+
+                <img
+                    src="images/img-2.jpg"
+                    alt="Italian pasta at Castelli's"
+                    loading="lazy">
+
+            </div>
+
+
+            <div class="menu-info">
+
+                <h3>
+                    Italian Pasta
+                </h3>
+
+                <p>
+                    Authentic Italian pasta
+                    prepared for a refined
+                    dining experience.
+                </p>
+
+            </div>
+
+
+            <div class="menu-tag">
+                Pasta
+            </div>
+
+
+        </article>
+
+
+        <article
+            class="menu-item reveal"
+            data-category="steak">
+
+
+            <div class="menu-photo">
+
+                <img
+                    src="images/img-3.jpg"
+                    alt="Steak dining"
+                    loading="lazy">
+
+            </div>
+
+
+            <div class="menu-info">
+
+                <h3>
+                    Premium Steaks
+                </h3>
+
+                <p>
+                    A premium choice for
+                    guests looking beyond
+                    pasta.
+                </p>
+
+            </div>
+
+
+            <div class="menu-tag">
+                Steak
+            </div>
+
+
+        </article>
+
+
+        <article
+            class="menu-item reveal"
+            data-category="wine">
+
+
+            <div class="menu-photo">
+
+                <img
+                    src="images/img-4.jpg"
+                    alt="Premium wine"
+                    loading="lazy">
+
+            </div>
+
+
+            <div class="menu-info">
+
+                <h3>
+                    Premium Wines
+                </h3>
+
+                <p>
+                    Wine as part of a
+                    complete formal dining
+                    experience.
+                </p>
+
+            </div>
+
+
+            <div class="menu-tag">
+                Wine
+            </div>
+
+
+        </article>
+
+
+        <article
+            class="menu-item reveal"
+            data-category="dining">
+
+
+            <div class="menu-photo">
+
+                <img
+                    src="images/img-1.jpg"
+                    alt="Formal restaurant dining"
+                    loading="lazy">
+
+            </div>
+
+
+            <div class="menu-info">
+
+                <h3>
+                    Formal Dining
+                </h3>
+
+                <p>
+                    An elegant setting for
+                    lunch, dinner and
+                    special occasions.
+                </p>
+
+            </div>
+
+
+            <div class="menu-tag">
+                Dining
+            </div>
+
+
+        </article>
+
+
+        <article
+            class="menu-item reveal"
+            data-category="pasta">
+
+
+            <div class="menu-photo">
+
+                <img
+                    src="images/img-3.jpg"
+                    alt="Italian cuisine"
+                    loading="lazy">
+
+            </div>
+
+
+            <div class="menu-info">
+
+                <h3>
+                    Italian Specialties
+                </h3>
+
+                <p>
+                    Italian-inspired selections
+                    designed around the restaurant's
+                    culinary identity.
+                </p>
+
+            </div>
+
+
+            <div class="menu-tag">
+                Pasta
+            </div>
+
+
+        </article>
+
+
+        <article
+            class="menu-item reveal"
+            data-category="wine">
+
+
+            <div class="menu-photo">
+
+                <img
+                    src="images/img-4.jpg"
+                    alt="Wine and dining"
+                    loading="lazy">
+
+            </div>
+
+
+            <div class="menu-info">
+
+                <h3>
+                    Wine Pairing
+                </h3>
+
+                <p>
+                    Complement your meal with
+                    a premium wine selection.
+                </p>
+
+            </div>
+
+
+            <div class="menu-tag">
+                Wine
+            </div>
+
+
+        </article>
+
+
+    </div>
+
+
+    <div
+        class="feature-banner reveal">
+
+
+        <div class="feature-banner-content">
+
+
+            <div class="eyebrow">
+                The Italian table
+            </div>
+
+
+            <h2>
+
+                Good food deserves
+                a beautiful setting.
+
+            </h2>
+
+
+            <p>
+
+                From pasta and steaks to
+                premium wines, Castelli's
+                brings together the essential
+                elements of a refined Italian
+                dining experience.
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     GALLERY
+     ===================================================== -->
+
+<section
+    class="section"
+    id="gallery">
+
+
+    <div class="section-head reveal">
+
+
+        <div>
+
+            <div class="eyebrow">
+                Visual experience
+            </div>
+
+
+            <h2 class="section-title">
+
+                Step inside
+                <em>Castelli's.</em>
+
+            </h2>
+
+        </div>
+
+
+        <p class="section-description">
+
+            A glimpse of the atmosphere,
+            food and dining experience.
+
+        </p>
+
+
+    </div>
+
+
+    <div class="gallery-grid">
+
+
+        <div
+            class="gallery-item reveal"
+            data-image="images/img-1.jpg">
+
+
+            <img
+                src="images/img-1.jpg"
+                alt="Castelli's Restaurant"
+                loading="lazy">
+
+
+            <div class="gallery-overlay">
+
+                <span>
+                    View image ↗
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="gallery-item reveal"
+            data-image="images/img-2.jpg">
+
+
+            <img
+                src="images/img-2.jpg"
+                alt="Italian dining"
+                loading="lazy">
+
+
+            <div class="gallery-overlay">
+
+                <span>
+                    View image ↗
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="gallery-item reveal"
+            data-image="images/img-3.jpg">
+
+
+            <img
+                src="images/img-3.jpg"
+                alt="Castelli's food"
+                loading="lazy">
+
+
+            <div class="gallery-overlay">
+
+                <span>
+                    View image ↗
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            class="gallery-item reveal"
+            data-image="images/img-4.jpg">
+
+
+            <img
+                src="images/img-4.jpg"
+                alt="Castelli's dining atmosphere"
+                loading="lazy">
+
+
+            <div class="gallery-overlay">
+
+                <span>
+                    View image ↗
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     LIGHTBOX
+     ===================================================== -->
+
+<div
+    class="lightbox"
+    id="lightbox">
+
+
+    <button
+        class="lightbox-close"
+        id="lightboxClose"
+        aria-label="Close image">
+
+        ×
+
+    </button>
+
+
+    <img
+        id="lightboxImage"
+        src=""
+        alt="Castelli's gallery preview">
+
+</div>
+
+
+<!-- =====================================================
+     RESERVATION CTA
+     ===================================================== -->
+
+<section
+    class="cta reveal">
+
+
+    <div class="cta-content">
+
+
+        <div class="eyebrow">
+            Your table awaits
+        </div>
+
+
+        <h2>
+
+            Reserve an
+            <em>evening.</em>
+
+        </h2>
+
+
+        <p>
+
+            For table reservations and
+            availability, contact Castelli's
+            directly through WhatsApp.
+
+        </p>
+
+
+        <div class="hero-actions">
+
+
+            <a
+                href="#reservation"
+                class="btn btn-primary magnetic">
+
+                <span>
+                    Reserve a Table →
+                </span>
+
+            </a>
+
+
+            <a
+                href="https://wa.me/251923778214"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-outline magnetic">
+
+                <span>
+                    WhatsApp ↗
+                </span>
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     FAQ
+     ===================================================== -->
+
+<section
+    class="section faq-section">
+
+
+    <div class="faq-grid">
+
+
+        <div class="faq-intro reveal">
+
+
+            <div class="eyebrow">
+                Good to know
+            </div>
+
+
+            <h2 class="section-title">
+
+                Before your
+                <em>visit.</em>
+
+            </h2>
+
+
+            <p>
+
+                A few practical details for
+                planning your visit to
+                Castelli's Restaurant.
+
+            </p>
+
+
+        </div>
+
+
+        <div class="faq reveal">
+
+
+            <div class="faq-item">
+
+
+                <button
+                    class="faq-question">
+
+                    <span>
+                        Where is Castelli's located?
+                    </span>
+
+                    <span class="faq-plus">
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+
+                        Castelli's Restaurant is
+                        located on Mahatma-Gandhi
+                        Street, in front of Mahmoud
+                        Music Shop, Piazza,
+                        Addis Ababa.
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="faq-item">
+
+
+                <button
+                    class="faq-question">
+
+                    <span>
+                        What are the opening hours?
+                    </span>
+
+                    <span class="faq-plus">
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+
+                        Castelli's is closed on
+                        Sunday. From Monday through
+                        Saturday, lunch is served
+                        from 12:00 PM to 3:00 PM
+                        and dinner from 7:00 PM
+                        to 10:00 PM.
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="faq-item">
+
+
+                <button
+                    class="faq-question">
+
+                    <span>
+                        Can I make a reservation online?
+                    </span>
+
+                    <span class="faq-plus">
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+
+                        Yes. Use the reservation
+                        form on this website to
+                        send your reservation request
+                        directly through WhatsApp.
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="faq-item">
+
+
+                <button
+                    class="faq-question">
+
+                    <span>
+                        What type of dining does Castelli's offer?
+                    </span>
+
+                    <span class="faq-plus">
+                        +
+                    </span>
+
+                </button>
+
+
+                <div class="faq-answer">
+
+                    <p>
+
+                        Castelli's focuses on
+                        authentic Italian pasta,
+                        steaks, premium wines and
+                        formal dining.
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     CONTACT / RESERVATION
+     ===================================================== -->
+
+<section
+    class="section"
+    id="reservation">
+
+
+    <div
+        class="section-head reveal">
+
+
+        <div>
+
+            <div class="eyebrow">
+                Reservations
+            </div>
+
+
+            <h2 class="section-title">
+
+                Make it
+                <em>your table.</em>
+
+            </h2>
+
+        </div>
+
+
+        <p class="section-description">
+
+            Send a reservation request directly
+            to Castelli's through WhatsApp.
+
+        </p>
+
+
+    </div>
+
+
+    <div
+        class="reservation-grid">
+
+
+        <div
+            class="reservation-info">
+
+
+            <div
+                class="contact-card reveal">
+
+
+                <div class="contact-icon">
+                    ☎
+                </div>
+
+
+                <h3>
+                    Call Castelli's
+                </h3>
+
+
+                <a href="tel:+251923778214">
+
+                    +251 923 778 214
+
+                </a>
+
+
+            </div>
+
+
+            <div
+                class="contact-card reveal">
+
+
+                <div class="contact-icon">
+                    ◉
+                </div>
+
+
+                <h3>
+                    Piazza, Addis Ababa
+                </h3>
+
+
+                <p>
+
+                    Mahatma-Gandhi St,
+                    in front of Mahmoud
+                    Music Shop, Piazza,
+                    Addis Ababa.
+
+                </p>
+
+
+                <a
+                    href="https://maps.google.com/?q=9.0321103,38.7528244"
+                    target="_blank"
+                    rel="noopener">
+
+                    Open Google Maps ↗
+
+                </a>
+
+
+            </div>
+
+
+            <div
+                class="hours-card reveal">
+
+
+                <div class="hours-title">
+                    Opening Hours
+                </div>
+
+
+                <div class="hours-sub">
+                    Please plan your visit accordingly.
+                </div>
+
+
+                <div class="hours-list">
+
+
+                    <div class="hours-row closed">
+
+                        <div class="hours-day">
+                            Sunday
+                        </div>
+
+                        <div class="hours-time">
+                            Closed
+                        </div>
+
+                    </div>
+
+
+                    <div class="hours-row">
+
+                        <div class="hours-day">
+                            Monday
+                        </div>
+
+                        <div class="hours-time">
+                            12:00 PM–3:00 PM<br>
+                            7:00 PM–10:00 PM
+                        </div>
+
+                    </div>
+
+
+                    <div class="hours-row">
+
+                        <div class="hours-day">
+                            Tuesday
+                        </div>
+
+                        <div class="hours-time">
+                            12:00 PM–3:00 PM<br>
+                            7:00 PM–10:00 PM
+                        </div>
+
+                    </div>
+
+
+                    <div class="hours-row">
+
+                        <div class="hours-day">
+                            Wednesday
+                        </div>
+
+                        <div class="hours-time">
+                            12:00 PM–3:00 PM<br>
+                            7:00 PM–10:00 PM
+                        </div>
+
+                    </div>
+
+
+                    <div class="hours-row">
+
+                        <div class="hours-day">
+                            Thursday
+                        </div>
+
+                        <div class="hours-time">
+                            12:00 PM–3:00 PM<br>
+                            7:00 PM–10:00 PM
+                        </div>
+
+                    </div>
+
+
+                    <div class="hours-row">
+
+                        <div class="hours-day">
+                            Friday
+                        </div>
+
+                        <div class="hours-time">
+                            12:00 PM–3:00 PM<br>
+                            7:00 PM–10:00 PM
+                        </div>
+
+                    </div>
+
+
+                    <div class="hours-row">
+
+                        <div class="hours-day">
+                            Saturday
+                        </div>
+
+                        <div class="hours-time">
+                            12:00 PM–3:00 PM<br>
+                            7:00 PM–10:00 PM
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <form
+            class="reservation-form reveal"
+            id="reservationForm">
+
+
+            <div class="form-title">
+                Reserve a Table
+            </div>
+
+
+            <div class="form-sub">
+
+                Complete the details below.
+                Your request will open in
+                WhatsApp for confirmation.
+
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <div>
+
+                    <input
+                        class="input"
+                        id="guestName"
+                        type="text"
+                        placeholder="Your name"
+                        autocomplete="name"
+                        required>
+
+                </div>
+
+
+                <div>
+
+                    <input
+                        class="input"
+                        id="guestPhone"
+                        type="tel"
+                        placeholder="Phone number"
+                        autocomplete="tel"
+                        required>
+
+                </div>
+
+
+                <div>
+
+                    <input
+                        class="input"
+                        id="reservationDate"
+                        type="date"
+                        required>
+
+                </div>
+
+
+                <div>
+
+                    <select
+                        class="input"
+                        id="reservationTime"
+                        required>
+
+                        <option
+                            value=""
+                            selected
+                            disabled>
+
+                            Preferred time
+
+                        </option>
+
+                        <option value="12:00 PM">
+                            12:00 PM
+                        </option>
+
+                        <option value="12:30 PM">
+                            12:30 PM
+                        </option>
+
+                        <option value="1:00 PM">
+                            1:00 PM
+                        </option>
+
+                        <option value="1:30 PM">
+                            1:30 PM
+                        </option>
+
+                        <option value="2:00 PM">
+                            2:00 PM
+                        </option>
+
+                        <option value="2:30 PM">
+                            2:30 PM
+                        </option>
+
+                        <option value="7:00 PM">
+                            7:00 PM
+                        </option>
+
+                        <option value="7:30 PM">
+                            7:30 PM
+                        </option>
+
+                        <option value="8:00 PM">
+                            8:00 PM
+                        </option>
+
+                        <option value="8:30 PM">
+                            8:30 PM
+                        </option>
+
+                        <option value="9:00 PM">
+                            9:00 PM
+                        </option>
+
+                        <option value="9:30 PM">
+                            9:30 PM
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <select
+                        class="input"
+                        id="guestCount"
+                        required>
+
+                        <option
+                            value=""
+                            selected
+                            disabled>
+
+                            Number of guests
+
+                        </option>
+
+                        <option value="1">
+                            1 guest
+                        </option>
+
+                        <option value="2">
+                            2 guests
+                        </option>
+
+                        <option value="3">
+                            3 guests
+                        </option>
+
+                        <option value="4">
+                            4 guests
+                        </option>
+
+                        <option value="5">
+                            5 guests
+                        </option>
+
+                        <option value="6">
+                            6 guests
+                        </option>
+
+                        <option value="7">
+                            7 guests
+                        </option>
+
+                        <option value="8">
+                            8 guests
+                        </option>
+
+                        <option value="9+">
+                            9+ guests
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <select
+                        class="input"
+                        id="occasion">
+
+                        <option
+                            value=""
+                            selected>
+
+                            Occasion (optional)
+
+                        </option>
+
+                        <option value="Dinner">
+                            Dinner
+                        </option>
+
+                        <option value="Business">
+                            Business
+                        </option>
+
+                        <option value="Special occasion">
+                            Special occasion
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    class="form-full">
+
+                    <textarea
+                        class="input"
+                        id="reservationMessage"
+                        placeholder="Additional request (optional)"></textarea>
+
+                </div>
+
+
+                <div
+                    class="form-full">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary magnetic"
+                        style="width:100%;">
+
+                        <span>
+                            Continue via WhatsApp →
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="form-note">
+
+                Reservation requests are sent through
+                WhatsApp and are subject to confirmation
+                by Castelli's Restaurant.
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+    <!-- =================================================
+         LOCATION
+         ================================================= -->
+
+    <div
+        class="location-panel reveal">
+
+
+        <div class="location-content">
+
+
+            <div class="eyebrow">
+                Find Castelli's
+            </div>
+
+
+            <h3>
+                Piazza, Addis Ababa
+            </h3>
+
+
+            <p>
+
+                Mahatma-Gandhi St,
+                in front of Mahmoud Music Shop,
+                Piazza, Addis Ababa.
+
+            </p>
+
+
+            <div class="hero-actions">
+
+
+                <a
+                    href="https://maps.google.com/?q=9.0321103,38.7528244"
+                    target="_blank"
+                    rel="noopener"
+                    class="btn btn-primary">
+
+                    <span>
+                        Open Google Maps ↗
+                    </span>
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<footer>
+
+
+    <div class="footer-inner">
+
+
+        <div class="footer-top">
+
+
+            <div class="footer-brand">
+
+
+                <h2>
+                    Castelli's
+                </h2>
+
+
+                <p>
+
+                    Premium Italian restaurant
+                    in Piazza, Addis Ababa,
+                    offering authentic Italian
+                    pasta, steaks, premium wines
+                    and formal dining.
+
+                </p>
+
+
+                <div class="socials">
+
+
+                    <a
+                        class="social"
+                        href="https://wa.me/251923778214"
+                        target="_blank"
+                        rel="noopener"
+                        aria-label="WhatsApp">
+
+                        WA
+
+                    </a>
+
+
+                    <a
+                        class="social"
+                        href="tel:+251923778214"
+                        aria-label="Phone">
+
+                        ☎
+
+                    </a>
+
+
+                    <a
+                        class="social"
+                        href="https://maps.google.com/?q=9.0321103,38.7528244"
+                        target="_blank"
+                        rel="noopener"
+                        aria-label="Google Maps">
+
+                        MAP
+
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+            <div class="footer-links">
+
+
+                <div class="footer-column">
+
+
+                    <h4>
+                        Explore
+                    </h4>
+
+
+                    <a href="#story">
+                        About
+                    </a>
+
+
+                    <a href="#experience">
+                        Experience
+                    </a>
+
+
+                    <a href="#menu">
+                        Menu
+                    </a>
+
+
+                    <a href="#gallery">
+                        Gallery
+                    </a>
+
+
+                </div>
+
+
+                <div class="footer-column">
+
+
+                    <h4>
+                        Visit
+                    </h4>
+
+
+                    <a href="#reservation">
+                        Reservations
+                    </a>
+
+
+                    <a
+                        href="https://maps.google.com/?q=9.0321103,38.7528244"
+                        target="_blank"
+                        rel="noopener">
+
+                        Directions
+                    </a>
+
+
+                    <a
+                        href="tel:+251923778214">
+
+                        Call
+                    </a>
+
+
+                    <a
+                        href="https://wa.me/251923778214"
+                        target="_blank"
+                        rel="noopener">
+
+                        WhatsApp
+                    </a>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+
+            <span>
+                © 2026 Castelli's Restaurant
+            </span>
+
+
+            <span>
+                Piazza · Addis Ababa
+            </span>
+
+
+        </div>
+
+
+    </div>
+
+
+</footer>
+
+
+<!-- =====================================================
+     BACK TO TOP
+     ===================================================== -->
+
+<button
+    class="to-top"
+    id="toTop"
+    aria-label="Back to top">
+
+    ↑
+
+</button>
+
+
+<!-- =====================================================
+     FLOATING WHATSAPP
+     ===================================================== -->
+
+<div class="whatsapp">
+
+
+    <a
+        href="https://wa.me/251923778214"
+        target="_blank"
+        rel="noopener"
+        aria-label="Contact Castelli's on WhatsApp">
+
+        ☎
+
+    </a>
+
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+
+/* =========================================================
+   CACHE IMPORTANT ELEMENTS
+   ========================================================= */
+
+const loader =
+    document.getElementById("loader");
+
+const nav =
+    document.getElementById("nav");
+
+const progress =
+    document.getElementById("progress");
+
+const menuToggle =
+    document.getElementById("menuToggle");
+
+const navLinks =
+    document.getElementById("navLinks");
+
+const toTop =
+    document.getElementById("toTop");
+
+
+/* =========================================================
+   LOADER
+   ========================================================= */
+
+window.addEventListener(
+    "load",
+    () => {
+
+        window.setTimeout(
+            () => {
+
+                loader.classList.add("hide");
+
+            },
+            700
+        );
+
+    }
+);
+
+
+/* =========================================================
+   SCROLL STATE
+   Single scroll listener for multiple lightweight effects
+   ========================================================= */
+
+let scrollTicking = false;
+
+function updateScrollUI(){
+
+    const scrollTop =
+        window.scrollY;
+
+    /* Navigation */
+
+    if(
+        scrollTop > 45
+    ){
+
+        nav.classList.add(
+            "scrolled"
+        );
+
+    }else{
+
+        nav.classList.remove(
+            "scrolled"
+        );
+
+    }
+
+
+    /* Progress */
+
+    const documentHeight =
+        document.documentElement
+        .scrollHeight;
+
+    const viewportHeight =
+        window.innerHeight;
+
+    const scrollable =
+        documentHeight -
+        viewportHeight;
+
+    const percentage =
+        scrollable > 0
+        ?
+        (
+            scrollTop /
+            scrollable
+        ) * 100
+        :
+        0;
+
+    progress.style.width =
+        percentage + "%";
+
+
+    /* Back to top */
+
+    if(
+        scrollTop > 650
+    ){
+
+        toTop.classList.add(
+            "show"
+        );
+
+    }else{
+
+        toTop.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    scrollTicking =
+        false;
+
+}
+
+window.addEventListener(
+    "scroll",
+    () => {
+
+        if(
+            !scrollTicking
+        ){
+
+            window.requestAnimationFrame(
+                updateScrollUI
+            );
+
+            scrollTicking =
+                true;
+
+        }
+
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* =========================================================
+   MOBILE NAVIGATION
+   ========================================================= */
+
+menuToggle.addEventListener(
+    "click",
+    () => {
+
+        const open =
+            menuToggle
+            .classList
+            .toggle("open");
+
+        navLinks.classList.toggle(
+            "open"
+        );
+
+        menuToggle.setAttribute(
+            "aria-expanded",
+            open ? "true" : "false"
+        );
+
+    }
+);
+
+
+/* Close mobile menu after navigation */
+
+document
+.querySelectorAll(
+    ".nav-links a"
+)
+.forEach(
+    link => {
+
+        link.addEventListener(
+            "click",
+            () => {
+
+                menuToggle
+                    .classList
+                    .remove("open");
+
+                navLinks
+                    .classList
+                    .remove("open");
+
+                menuToggle.setAttribute(
+                    "aria-expanded",
+                    "false"
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   CUSTOM CURSOR
+   Only enabled for fine-pointer devices
+   ========================================================= */
+
+const finePointer =
+    window.matchMedia(
+        "(pointer:fine)"
+    ).matches;
+
+if(
+    finePointer
+){
+
+    const cursorDot =
+        document.getElementById(
+            "cursorDot"
+        );
+
+    const cursorRing =
+        document.getElementById(
+            "cursorRing"
+        );
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    let ringX = 0;
+    let ringY = 0;
+
+    window.addEventListener(
+        "mousemove",
+        event => {
+
+            mouseX =
+                event.clientX;
+
+            mouseY =
+                event.clientY;
+
+            cursorDot.style.left =
+                mouseX + "px";
+
+            cursorDot.style.top =
+                mouseY + "px";
+
+        },
+        {
+            passive:true
+        }
+    );
+
+
+    function animateCursor(){
+
+        ringX +=
+            (
+                mouseX -
+                ringX
+            ) * .13;
+
+        ringY +=
+            (
+                mouseY -
+                ringY
+            ) * .13;
+
+        cursorRing.style.left =
+            ringX + "px";
+
+        cursorRing.style.top =
+            ringY + "px";
+
+        requestAnimationFrame(
+            animateCursor
+        );
+
+    }
+
+    animateCursor();
+
+
+    document
+    .querySelectorAll(
+        "a,button,.gallery-item,.experience-card"
+    )
+    .forEach(
+        element => {
+
+            element.addEventListener(
+                "mouseenter",
+                () => {
+
+                    cursorRing
+                        .classList
+                        .add("active");
+
+                }
+            );
+
+            element.addEventListener(
+                "mouseleave",
+                () => {
+
+                    cursorRing
+                        .classList
+                        .remove("active");
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
+
+const revealObserver =
+    new IntersectionObserver(
+        entries => {
+
+            entries.forEach(
+                entry => {
+
+                    if(
+                        entry.isIntersecting
+                    ){
+
+                        entry
+                            .target
+                            .classList
+                            .add("visible");
+
+                        revealObserver
+                            .unobserve(
+                                entry.target
+                            );
+
+                    }
+
+                }
+            );
+
+        },
+        {
+            threshold:.12,
+            rootMargin:"0px 0px -30px 0px"
+        }
+    );
+
+
+document
+.querySelectorAll(
+    ".reveal"
+)
+.forEach(
+    element => {
+
+        revealObserver.observe(
+            element
+        );
+
+    }
+);
+
+
+/* =========================================================
+   MENU FILTER
+   ========================================================= */
+
+const menuTabs =
+    document.querySelectorAll(
+        ".menu-tab"
+    );
+
+const menuItems =
+    document.querySelectorAll(
+        ".menu-item"
+    );
+
+
+menuTabs.forEach(
+    tab => {
+
+        tab.addEventListener(
+            "click",
+            () => {
+
+                menuTabs.forEach(
+                    currentTab => {
+
+                        currentTab
+                            .classList
+                            .remove("active");
+
+                    }
+                );
+
+
+                tab.classList.add(
+                    "active"
+                );
+
+
+                const filter =
+                    tab.dataset.filter;
+
+
+                menuItems.forEach(
+                    item => {
+
+                        const category =
+                            item.dataset.category;
+
+
+                        const show =
+                            filter === "all" ||
+                            category === filter;
+
+
+                        if(
+                            show
+                        ){
+
+                            item.classList
+                                .remove("hidden");
+
+                        }else{
+
+                            item.classList
+                                .add("hidden");
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   GALLERY LIGHTBOX
+   ========================================================= */
+
+const lightbox =
+    document.getElementById(
+        "lightbox"
+    );
+
+const lightboxImage =
+    document.getElementById(
+        "lightboxImage"
+    );
+
+const lightboxClose =
+    document.getElementById(
+        "lightboxClose"
+    );
+
+
+document
+.querySelectorAll(
+    ".gallery-item"
+)
+.forEach(
+    item => {
+
+        item.addEventListener(
+            "click",
+            () => {
+
+                const image =
+                    item.dataset.image;
+
+                lightboxImage.src =
+                    image;
+
+                lightbox.classList.add(
+                    "open"
+                );
+
+                document.body.classList.add(
+                    "locked"
+                );
+
+            }
+        );
+
+    }
+);
+
+
+function closeLightbox(){
+
+    lightbox.classList.remove(
+        "open"
+    );
+
+    document.body.classList.remove(
+        "locked"
+    );
+
+}
+
+
+lightboxClose.addEventListener(
+    "click",
+    closeLightbox
+);
+
+
+lightbox.addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target ===
+            lightbox
+        ){
+
+            closeLightbox();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key === "Escape"
+        ){
+
+            closeLightbox();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   FAQ ACCORDION
+   ========================================================= */
+
+const faqItems =
+    document.querySelectorAll(
+        ".faq-item"
+    );
+
+
+faqItems.forEach(
+    item => {
+
+        const button =
+            item.querySelector(
+                ".faq-question"
+            );
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const currentlyOpen =
+                    item.classList.contains(
+                        "open"
+                    );
+
+
+                faqItems.forEach(
+                    other => {
+
+                        other.classList.remove(
+                            "open"
+                        );
+
+                    }
+                );
+
+
+                if(
+                    !currentlyOpen
+                ){
+
+                    item.classList.add(
+                        "open"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   RESERVATION DATE VALIDATION
+   ========================================================= */
+
+const reservationDate =
+    document.getElementById(
+        "reservationDate"
+    );
+
+
+function getTodayString(){
+
+    const today =
+        new Date();
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+reservationDate.min =
+    getTodayString();
+
+
+/* =========================================================
+   RESERVATION FORM
+   Opens WhatsApp with structured request
+   ========================================================= */
+
+const reservationForm =
+    document.getElementById(
+        "reservationForm"
+    );
+
+
+reservationForm.addEventListener(
+    "submit",
+    event => {
+
+        event.preventDefault();
+
+
+        const name =
+            document.getElementById(
+                "guestName"
+            ).value.trim();
+
+
+        const phone =
+            document.getElementById(
+                "guestPhone"
+            ).value.trim();
+
+
+        const date =
+            document.getElementById(
+                "reservationDate"
+            ).value;
+
+
+        const time =
+            document.getElementById(
+                "reservationTime"
+            ).value;
+
+
+        const guests =
+            document.getElementById(
+                "guestCount"
+            ).value;
+
+
+        const occasion =
+            document.getElementById(
+                "occasion"
+            ).value;
+
+
+        const message =
+            document.getElementById(
+                "reservationMessage"
+            ).value.trim();
+
+
+        if(
+            !name ||
+            !phone ||
+            !date ||
+            !time ||
+            !guests
+        ){
+
+            return;
+
+        }
+
+
+        const selectedDate =
+            new Date(
+                date +
+                "T12:00:00"
+            );
+
+
+        const day =
+            selectedDate.getDay();
+
+
+        /*
+         * JavaScript:
+         * Sunday = 0
+         * Monday = 1
+         * ...
+         * Saturday = 6
+         */
+
+        if(
+            day === 0
+        ){
+
+            alert(
+                "Castelli's Restaurant is closed on Sunday. Please choose another date."
+            );
+
+            return;
+
+        }
+
+
+        const readableDate =
+            selectedDate.toLocaleDateString(
+                "en-US",
+                {
+                    weekday:"long",
+                    year:"numeric",
+                    month:"long",
+                    day:"numeric"
+                }
+            );
+
+
+        const text =
+`Hello Castelli's Restaurant,
+
+I would like to request a table reservation.
+
+Name: ${name}
+Phone: ${phone}
+
+Date: ${readableDate}
+Preferred Time: ${time}
+Guests: ${guests}
+${occasion ? "Occasion: " + occasion : ""}
+
+${message ? "Additional Request:\n" + message : ""}
+
+Please confirm availability.
+
+Thank you.`;
+
+
+        const whatsappURL =
+            "https://wa.me/251923778214?text=" +
+            encodeURIComponent(
+                text
+            );
+
+
+        window.open(
+            whatsappURL,
+            "_blank",
+            "noopener"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   BACK TO TOP
+   ========================================================= */
+
+toTop.addEventListener(
+    "click",
+    () => {
+
+        window.scrollTo(
+            {
+                top:0,
+                behavior:"smooth"
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   MAGNETIC BUTTONS
+   Lightweight desktop-only interaction
+   ========================================================= */
+
+if(
+    finePointer
+){
+
+    document
+    .querySelectorAll(
+        ".magnetic"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "mousemove",
+                event => {
+
+                    const rect =
+                        button.getBoundingClientRect();
+
+
+                    const x =
+                        event.clientX -
+                        rect.left -
+                        rect.width / 2;
+
+
+                    const y =
+                        event.clientY -
+                        rect.top -
+                        rect.height / 2;
+
+
+                    button.style.transform =
+                        `translate(
+                            ${x * .08}px,
+                            ${y * .08}px
+                        )`;
+
+                }
+            );
+
+
+            button.addEventListener(
+                "mouseleave",
+                () => {
+
+                    button.style.transform =
+                        "";
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   HERO IMAGE PARALLAX
+   Very small movement.
+   Disabled on mobile and reduced-motion.
+   ========================================================= */
+
+const reducedMotion =
+    window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+const heroImage =
+    document.querySelector(
+        ".hero-image"
+    );
+
+
+if(
+    !reducedMotion &&
+    window.matchMedia(
+        "(min-width: 900px)"
+    ).matches
+){
+
+    let heroTicking =
+        false;
+
+
+    window.addEventListener(
+        "scroll",
+        () => {
+
+            if(
+                heroTicking
+            ){
+
+                return;
+
+            }
+
+
+            heroTicking =
+                true;
+
+
+            requestAnimationFrame(
+                () => {
+
+                    const scroll =
+                        window.scrollY;
+
+
+                    if(
+                        scroll <
+                        window.innerHeight
+                    ){
+
+                        heroImage.style.transform =
+                            `scale(1.035)
+                             translateY(
+                                ${scroll * .025}px
+                             )`;
+
+                    }
+
+
+                    heroTicking =
+                        false;
+
+                }
+            );
+
+        },
+        {
+            passive:true
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PRELOAD ONLY HERO + LOGO
+   Other images remain lazy loaded.
+   ========================================================= */
+
+[
+    "images/hero.jpg",
+    "images/logo.png"
+]
+.forEach(
+    source => {
+
+        const image =
+            new Image();
+
+        image.src =
+            source;
+
+    }
+);
+
+
+/* =========================================================
+   SMART EXTERNAL LINKS
+   ========================================================= */
+
+document
+.querySelectorAll(
+    'a[target="_blank"]'
+)
+.forEach(
+    link => {
+
+        link.setAttribute(
+            "rel",
+            "noopener"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL UI STATE
+   ========================================================= */
+
+updateScrollUI();
+
+
+</script>
+
+
+</body>
+
+</html>
